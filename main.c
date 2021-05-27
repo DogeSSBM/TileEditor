@@ -9,9 +9,11 @@ void drawGridLines(const Offset origin, const uint scale)
 	setColor(WHITE);
 	for(uint y = 0; y < gridlen.y; y++){
 		drawHLine(0, firstLineOff.y+y*scale, window.x);
+		drawHLine(0, firstLineOff.y+y*scale-1, window.x);
 	}
 	for(uint x = 0; x < gridlen.x; x++){
 		drawVLine(firstLineOff.x+x*scale, 0, window.y);
+		drawVLine(firstLineOff.x+x*scale-1, 0, window.y);
 	}
 
 	setColor(RED);
@@ -34,6 +36,7 @@ int main(int argc, char const *argv[])
 		Ticks frameStart = getTicks();
 		clear();
 
+		const Coord mouseGridPos = coordSub(mouse.pos, coordMod(mouse.pos, scale));
 		setColor(WHITE);
 		if(mouseBtnPressed(MOUSE_L))
 			offstart = off;
@@ -47,6 +50,10 @@ int main(int argc, char const *argv[])
 		drawLineCoords(offstart, offstop);
 		fillCircleCoord(off, scale);
 		drawGridLines(off, scale);
+
+		setColor(BLUE);
+
+		fillBorderCoordSquare(mouseGridPos, scale, -2);
 
 		draw();
 		events(frameStart + TPF);

@@ -10,7 +10,14 @@ struct{
 	Color fontColor;
 	Color defaultColor;
 	Length restoreLen;
+	bool windowResized;
 }gfx = {};
+
+static inline
+bool windowResized(void)
+{
+	return gfx.windowResized;
+}
 
 static inline
 void setWindowMode(const WindowMode mode)

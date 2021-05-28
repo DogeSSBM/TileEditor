@@ -5,6 +5,7 @@ void events(const Ticks frameEnd)
 	i32 ticksLeft = frameEnd - getTicks();
 	mouse.prev.wheel = mouse.wheel;
 	mouse.wheel = 0;
+	gfx.windowResized = false;
 	do{
 		Event event;
 		if(SDL_WaitEventTimeout(&event, ticksLeft>0?ticksLeft:1)){
@@ -23,6 +24,7 @@ void events(const Ticks frameEnd)
 			case SDL_WINDOWEVENT:
 				if(getWindowResizable() && event.window.event == SDL_WINDOWEVENT_RESIZED){
 					setWindowLen((Length){event.window.data1, event.window.data2});
+					gfx.windowResized = true;
 				}
 				break;
 			default:

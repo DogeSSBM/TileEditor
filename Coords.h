@@ -223,6 +223,12 @@ Coord coordMod(const Coord coord, const int num)
 }
 
 static inline
+Coord coordAbs(const Coord coord)
+{
+	return (const Coord){abs(coord.x), abs(coord.y)};
+}
+
+static inline
 Coordf coordfNormalize(const Coordf coord)
 {
 	return coordfDiv(coord, coordfDist((Coordf){0.0f,0.0f}, coord));

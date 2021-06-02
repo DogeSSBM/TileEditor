@@ -1,6 +1,14 @@
 #include "Includes.h"
 
 typedef struct{
+	Length len;
+	Tile **map;
+
+	uint numTileVarients;
+	Tile *tileVarients;
+}TileMap;
+
+typedef struct{
 	Length window;
 	Coord origin;
 	Offset gridOffset;
@@ -63,8 +71,6 @@ int main(int argc, char const *argv[])
 			cam.window = getWindowLen();
 		if(mouseBtnState(MOUSE_L))
 			cam.origin = coordOffset(cam.origin, mouse.vec);
-		else
-			cam.origin = keyPan(cam.origin);
 		cam.gridOffset = calcGridOffset(cam.origin, cam.scale);
 
 		drawGridLines(cam);

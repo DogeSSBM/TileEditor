@@ -52,9 +52,24 @@ void outlineMouseTile(const Camera cam)
 	fillBorderCoordSquare(m, cam.scale, 4);
 }
 
+uint menu(void)
+{
+	const char *optionLabel[] = {
+		"1: Open Tile Map",
+		"2: New Tile Map",
+		":",
+		":",
+		":",
+		"0: Exit",
+	}
+}
+
 int main(int argc, char const *argv[])
 {
 	init();
+	switch(menu()){
+
+	}
 	setFontSize(16);
 	Camera cam = {
 		.window = getWindowLen(),

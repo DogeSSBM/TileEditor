@@ -1,12 +1,12 @@
 #include "Includes.h"
 
-typedef struct{
-	Length len;
-	Tile **map;
-
-	uint numTileVarients;
-	Tile *tileVarients;
-}TileMap;
+// typedef struct{
+// 	Length len;
+// 	Tile **map;
+//
+// 	uint numTileVarients;
+// 	Tile *tileVarients;
+// }TileMap;
 
 typedef struct{
 	Length window;
@@ -52,41 +52,67 @@ void outlineMouseTile(const Camera cam)
 	fillBorderCoordSquare(m, cam.scale, 4);
 }
 
-uint menu(void)
+uint menu(const Length window)
 {
+	setTextSize(24);
+	setTextColor(WHITE);
+	setColor(WHITE);
 	const char *optionLabel[] = {
+		"0: Exit",
 		"1: Open Tile Map",
 		"2: New Tile Map",
-		":",
-		":",
-		":",
-		"0: Exit",
-	}
-}
-
-int main(int argc, char const *argv[])
-{
-	init();
-	switch(menu()){
-
-	}
-	setFontSize(16);
-	Camera cam = {
-		.window = getWindowLen(),
-		.origin = (Offset){0,0},
-		.gridOffset = (Offset){0,0},
-		.scale = 40
 	};
+	Rect optionBox[3] = {0};
+	spanTextListRectCentered(optionBox, coordDiv(window, 2),(Coord){window.x/2, window.y}, 3, optionLabel);
 
 	while(1){
 		Ticks frameStart = getTicks();
 		clear();
 
-		if(windowResized())
-			cam.window = getWindowLen();
+		spanTextListCentered(coordDiv(window, 2),(Coord){window.x/2, window.y}, 3, optionLabel);
+		for(uint i = 0; i < 3; i++){
+			if(coordInRect(mouse))
+			drawRectRect(optionBox[i]);
+		}
+
+
+		if(keyState(SDL_SCANCODE_SPACE))
+			return 0;
+
+		draw();
+		events(frameStart + TPF);
+	}
+	return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+	init();
+	Camera cam = {
+		.origin = (Offset){0,0},
+		.window = (Length){800, 600},
+		.gridOffset = (Offset){0,0},
+		.scale = 40,
+	};
+
+	setWindowLen(cam.window);
+	switch(menu(cam.window)){
+		default:
+			break;
+	}
+
+	while(1){
+		Ticks frameStart = getTicks();
+		clear();
+
 		if(mouseBtnState(MOUSE_L))
 			cam.origin = coordOffset(cam.origin, mouse.vec);
 		cam.gridOffset = calcGridOffset(cam.origin, cam.scale);
+
+		if(mouseScrolled(MW_U))
+			cam.scale = lbound(cam.scale-5, 5);
+		if(mouseScrolled(MW_D))
+			cam.scale += 5;
 
 		drawGridLines(cam);
 		outlineMouseTile(cam);

@@ -10,14 +10,7 @@ struct{
 	Color fontColor;
 	Color defaultColor;
 	Length restoreLen;
-	bool windowResized;
 }gfx = {};
-
-static inline
-bool windowResized(void)
-{
-	return gfx.windowResized;
-}
 
 static inline
 void setWindowMode(const WindowMode mode)
@@ -175,6 +168,18 @@ void fillRectCoords(const Coord pos1, const Coord pos2)
 			abs(pos1.y-pos2.y)
 		}
 	);
+}
+
+static inline
+void drawRectRect(const Rect rect)
+{
+	SDL_RenderDrawRect(gfx.renderer, &rect);
+}
+
+static inline
+void fillRectRect(const Rect rect)
+{
+	SDL_RenderFillRect(gfx.renderer, &rect);
 }
 
 static inline

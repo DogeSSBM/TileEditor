@@ -118,6 +118,11 @@ bool coordInRange(const Coord coord, const Range range)
 	return inRange(coord.x, range) && inRange(coord.y, range);
 }
 
+Coord coordClampLen(const Coord coord, const Length len)
+{
+	return (const Coord){clamp(coord.x, 0, len.x), clamp(coord.y, 0, len.y)};
+}
+
 // Returns true if each part of pos1 is less than their counterpart in pos2
 static inline
 bool coordMaxCoord(const Coord pos1, const Coord pos2)
@@ -220,12 +225,6 @@ static inline
 Coord coordMod(const Coord coord, const int num)
 {
 	return (Coord){coord.x%num, coord.y%num};
-}
-
-static inline
-Coord coordAbs(const Coord coord)
-{
-	return (const Coord){abs(coord.x), abs(coord.y)};
 }
 
 static inline

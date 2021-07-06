@@ -250,6 +250,15 @@ void fillBorder(uint x, uint y, uint xlen, uint ylen, int b)
 }
 
 static inline
+void fillBorderRect(const Rect rect, const int b)
+{
+	fillRect(rect.x-b, rect.y-b, rect.w+2*b, b);
+	fillRect(rect.x-b, rect.y+rect.h, rect.w+2*b, b);
+	fillRect(rect.x-b, rect.y, b, rect.h);
+	fillRect(rect.x+rect.w, rect.y, b, rect.h);
+}
+
+static inline
 void fillBorderCoords(const Coord pos, const Length len, const int b)
 {
 	fillRect(pos.x-b,		pos.y-b,		len.x+2*b,	b);

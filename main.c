@@ -1,13 +1,5 @@
 #include "Includes.h"
 
-// typedef struct{
-// 	Length len;
-// 	Tile **map;
-//
-// 	uint numTileVarients;
-// 	Tile *tileVarients;
-// }TileMap;
-
 typedef struct{
     Length window;
     Coord origin;
@@ -57,6 +49,10 @@ void outlineMouseTile(const Camera cam)
     );
     setColor(CYAN);
     fillBorderCoordSquare(m, cam.scale, 4);
+    setTextColor(CYAN);
+    char buf[32] = {0};
+    sprintf(buf, "{% 4i,% 4i}", m.x, m.y);
+    drawTextCoord(m, buf);
 }
 
 uint menu(const Length window)
@@ -65,9 +61,9 @@ uint menu(const Length window)
     setTextColor(WHITE);
     setColor(WHITE);
     const char *optionLabel[] = {
-        "0: Exit",
-        "1: Open Tile Map",
-        "2: New Tile Map",
+        "Exit",
+        "New Tile Map",
+        "Open Tile Map",
     };
     Rect optionBox[3] = {0};
     spanTextListRectCentered(optionBox, coordDiv(window, 2),(Coord){window.x/2, window.y}, 3, optionLabel);
@@ -95,6 +91,38 @@ uint menu(const Length window)
     return 0;
 }
 
+Coord tileAt(const Coord pos, const Camera cam)
+{
+    char buf[32] = {0};
+    const Coord protoTile = coordDiv(coordSub(pos, cam.origin), cam.scale);
+    const Coord tile = {
+        pos.x < cam.origin.x ? protoTile.x-1 : protoTile.x,
+        pos.y < cam.origin.y ? protoTile.y-1 : protoTile.y
+    };
+    sprintf(buf, "(% 4i,% 4i)", tile.x, tile.y);
+    setTextColor(WHITE);
+    drawTextCoord(pos, buf);
+    return tile;
+}
+
+void drawCamInfo(const Coord pos, const Camera cam)
+{
+    char buf0[32] = {0};
+    char buf1[32] = {0};
+    char buf2[32] = {0};
+    char buf3[32] = {0};
+    char buf4[32] = {0};
+    setTextColor(WHITE);
+    sprintf(buf0, "window:(Length)    {% 4i,% 4i}", cam.window.x, cam.window.y);
+    sprintf(buf1, "origin:(Coord)     {% 4i,% 4i}", cam.origin.x, cam.origin.y);
+    sprintf(buf2, "gridOffset:(Offset){% 4i,% 4i}", cam.gridOffset.x, cam.gridOffset.y);
+    sprintf(buf3, "scale:(uint)       {%3u}", cam.scale);
+    sprintf(buf4, "mouse.pos:(Coord)  {% 4i,% 4i}", mouse.pos.x, mouse.pos.y);
+    spanTextListLeft(pos, coordShift(pos, DIR_D, getTextSize()*5), 5,
+        (const char*[5]){buf0, buf1, buf2, buf3, buf4}
+    );
+}
+
 int main(int argc, char const *argv[])
 {
     init();
@@ -107,8 +135,18 @@ int main(int argc, char const *argv[])
 
     setWindowLen(cam.window);
     switch(menu(cam.window)){
+        case 0:
+            printf("Exiting now.\n");
+            exit(0);
+            break;
+        case 1:
+            printf("Starting new tile map.\n");
+            break;
+        case 2:
+            printf("Opening tile map.\n");
+            break;
         default:
-        break;
+            break;
     }
 
     while(1){
@@ -126,6 +164,9 @@ int main(int argc, char const *argv[])
 
         drawGridLines(cam);
         outlineMouseTile(cam);
+
+        const Coord outlinedTile = tileAt(mouse.pos, cam);
+        drawCamInfo(coordDiv(cam.window, 16), cam);
 
         draw();
         events(frameStart + TPF);
